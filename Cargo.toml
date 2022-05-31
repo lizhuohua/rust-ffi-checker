@@ -1,0 +1,34 @@
+[package]
+name = "rust-ffi-checker"
+version = "0.1.0"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[[bin]]
+name = "cargo-ffi-checker"
+
+[[bin]]
+name = "entry_collector"
+
+[[bin]]
+name = "analyzer"
+
+[dependencies]
+llvm-sys = "130"
+llvm-ir = { version = "0.8.1", features = ["llvm-13"] }
+llvm-ir-analysis = { version = "0.3.1", features = ["llvm-13"] }
+bit-set = "0.5.2"
+pretty_env_logger = "0.3.1"
+log = "0.4"
+either = "1.6.1"
+serde_json = "1.0"
+cargo_metadata = "0.14.1"
+walkdir = "2"
+rustc-demangle = "0.1"
+infer = "0.6.0"
+
+[profile.release]
+# LTO currently causes the release build to fail, see:
+# https://github.com/rust-lang/rust/issues/60512
+lto = false

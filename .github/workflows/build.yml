@@ -1,0 +1,34 @@
+name: build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Install dependencies
+      run: |
+        wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
+        sudo add-apt-repository 'deb http://apt.llvm.org/focal/ llvm-toolchain-focal-13 main'
+        sudo apt-get update
+        sudo apt-get install llvm-13-dev libclang-common-13-dev
+      
+    - name: Get sources
+      uses: actions/checkout@v2
+      with:
+        submodules: true
+    
+    - name: Install Rust components
+      run: rustup component add rustc-dev llvm-tools-preview
+
+    - name: Build
+      run: cargo build --verbose
